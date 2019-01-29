@@ -5,10 +5,10 @@ using DbTools.Core;
 using DbTools.Core.Managers;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using DbTools.Simple.Managers;
 using Microsoft.Extensions.Logging;
-using ReportGenerator.Core.Database.Managers;
 
-namespace ReportGenerator.Core.Database.Factories
+namespace DbTools.Simple.Factories
 {
     public static class DbManagerFactory
     {

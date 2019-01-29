@@ -1,7 +1,6 @@
 using System;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,8 +9,6 @@ using DbTools.Core.Managers;
 using DbTools.Simple.Factories;
 using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
-using DbTools.Simple.Factories;
-using DbTools.Simple.Utils;
 
 namespace DbTools.Simple.Managers
 {
