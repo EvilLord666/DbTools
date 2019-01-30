@@ -203,10 +203,6 @@ namespace DbTools.Simple.Managers
                 _logger.LogError($"An error occurred during Async Db Reader Execution: {e}");
                 result = null;
             }
-            finally
-            {
-                command.Dispose();
-            }
 
             return result;
         }
