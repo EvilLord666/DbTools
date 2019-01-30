@@ -20,7 +20,7 @@ namespace DbTools.Simple.Factories
                 return new MySqlCommand(cmdText, connection as MySqlConnection);
             if (dbEngine == DbEngine.PostgresSql)
                 return new NpgsqlCommand(cmdText, connection as NpgsqlConnection);
-            throw new NotImplementedException("Other db engine are not supported yet, please add a github issue https://github.com/EvilLord666/ReportGenerator");
+            throw new NotImplementedException("Other db engine are not supported yet, please add a github issue https://github.com/EvilLord666/DbTools");
         }
     }
 }

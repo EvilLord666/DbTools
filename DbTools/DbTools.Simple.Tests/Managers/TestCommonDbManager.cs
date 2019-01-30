@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using DbTools.Core;
 using DbTools.Core.Managers;
 using DbTools.Simple.Factories;
 using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Xunit;
 
 namespace DbTools.Simple.Tests.Managers
@@ -29,10 +30,66 @@ namespace DbTools.Simple.Tests.Managers
             CheckDatabaseExists(dbManager, dbEngine, connectionString, false);
         }
 
-        [Fact]
-        public void TestExecuteNonQuery()
+        /// <summary>
+        ///     Test execute non-query (structure creation script : one table for compatibility across databases engines
+        ///     do not execute this tests parallel, there are could be a problems with it.
+        /// </summary>
+        /// <param name="dbEngine"> one of enum value corresponding to proper db engine </param>
+        /// <param name="useIntegratedSecurity"> affects only on SQL Server to use Win Authentication </param>
+        /// <param name="userName"> user name if non sql server and useIntegratedSecurity is false </param>
+        /// <param name="password"> user password (my test databases have password 123) </param>
+        /// <param name="isAsync"> indicator to use async IDbManager interface or sync </param>
+        [Theory]
+        [InlineData(DbEngine.SqlServer, true, "", "", false)]
+        [InlineData(DbEngine.SqlServer, true, "", "", true)]
+        [InlineData(DbEngine.SqLite, true, null, null, false)]
+        [InlineData(DbEngine.SqLite, true, null, null, true)]
+        [InlineData(DbEngine.MySql, false, "root", "123", false)]
+        [InlineData(DbEngine.MySql, false, "root", "123", true)]
+        [InlineData(DbEngine.PostgresSql, false, "postgres", "123", false)] 
+        [InlineData(DbEngine.PostgresSql, false, "postgres", "123", true)]
+        public void TestExecuteNonQuery(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password, bool isAsync)
         {
-            
+            IDbManager dbManager = CreateTestDbManager(dbEngine);
+            string connectionString = BuildConnectionString(dbEngine, useIntegratedSecurity, userName, password);
+            dbManager.CreateDatabase(connectionString, true);
+            string cmd = File.ReadAllText(Path.GetFullPath(CreateStructureScriptFile));
+            ExecuteScriptAndCheck(dbManager, connectionString, cmd, isAsync);
+            dbManager.DropDatabase(connectionString);
+        }
+
+        [Theory]
+        [InlineData(DbEngine.SqlServer, true, "", "", false)]
+        [InlineData(DbEngine.SqlServer, true, "", "", true)]
+        [InlineData(DbEngine.SqLite, true, null, null, false)]
+        [InlineData(DbEngine.SqLite, true, null, null, true)]
+        [InlineData(DbEngine.MySql, false, "root", "123", false)]
+        [InlineData(DbEngine.MySql, false, "root", "123", true)]
+        [InlineData(DbEngine.PostgresSql, false, "postgres", "123", false)] 
+        [InlineData(DbEngine.PostgresSql, false, "postgres", "123", true)]
+        public void TestExecuteReader(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password, bool isAsync)
+        {
+            IDbManager dbManager = CreateTestDbManager(dbEngine);
+            string connectionString = BuildConnectionString(dbEngine, useIntegratedSecurity, userName, password);
+            dbManager.CreateDatabase(connectionString, true);
+            string createTablesCmd = File.ReadAllText(Path.GetFullPath(CreateStructureScriptFile));
+            string insertDataCmd = File.ReadAllText(Path.GetFullPath(InsertDataScriptFile));
+            ExecuteScriptAndCheck(dbManager, connectionString, createTablesCmd, isAsync);
+            ExecuteScriptAndCheck(dbManager, connectionString, insertDataCmd, isAsync);
+            dbManager.DropDatabase(connectionString);
+        }
+
+        private void ExecuteScriptAndCheck(IDbManager dbManager, string connectionString, string cmd, bool isAsync)
+        {
+            bool result = false;
+            if (isAsync)
+            {
+                Task<bool> executionTask = dbManager.ExecuteNonQueryAsync(connectionString, cmd);
+                executionTask.Wait();
+                result = executionTask.Result;
+            }
+            else result = dbManager.ExecuteNonQuery(connectionString, cmd);
+            Assert.True(result);
         }
 
         private IDbManager CreateTestDbManager(DbEngine dbEngine)
@@ -97,15 +154,18 @@ namespace DbTools.Simple.Tests.Managers
             }
         }
 
-        private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
-        private const string TestSqlServerDatabase = "SQLServerTestDb";
-        private const string TestSqLiteDatabase = "SqLiteTestDb.sqlite";
         private const string TestMySqlHost = "localhost";
-        private const string TestMySqlDatabase = "MySqlTestDb";
+        private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
         private const string TestPostgresSqlHost = "localhost";
+        
+        private const string TestSqlServerDatabase = "SQLServerTestDb";
+        private const string TestSqLiteDatabase = "SqLiteTestDb.sqlite";     
+        private const string TestMySqlDatabase = "MySqlTestDb";    
         private const string TestPostgresSqlDatabase = "PostgresTestDb";
 
         private const string SelectDatabaseTemplate = "SELECT {0} FROM {1} WHERE {0}={2};";
+        private const string CreateStructureScriptFile = @"..\..\..\TestScripts\CreateDb.sql";
+        private const string InsertDataScriptFile = @"..\..\..\TestScripts\InsertData.sql";
 
         private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
 

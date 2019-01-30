@@ -29,7 +29,7 @@ namespace DbTools.Simple.Factories
                 {
                     Direction = parameterDirection
                 };
-            throw new NotImplementedException("Other db engine are not supported yet, please add a github issue https://github.com/EvilLord666/ReportGenerator");
+            throw new NotImplementedException("Other db engine are not supported yet, please add a github issue https://github.com/EvilLord666/DbTools");
         }
     }
 }

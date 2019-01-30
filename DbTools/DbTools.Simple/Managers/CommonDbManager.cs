@@ -9,6 +9,7 @@ using DbTools.Core.Managers;
 using DbTools.Simple.Factories;
 using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace DbTools.Simple.Managers
 {
@@ -67,7 +68,10 @@ namespace DbTools.Simple.Managers
                 if (_dbEngine == DbEngine.PostgresSql)
                     connectionString = ConnectionStringHelper.GetPostgresSqlSysDbConnectionString(connectionString);
 
-                return ExecuteStatement(connectionString, dropSqlStatement);
+                bool result = ExecuteStatement(connectionString, dropSqlStatement);
+                if (_dbEngine == DbEngine.PostgresSql)
+                    NpgsqlConnection.ClearAllPools();              // fixes issue with fast connection re-open
+                return result;
             }
             catch (Exception e)
             {
