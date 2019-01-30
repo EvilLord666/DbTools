@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using DbTools.Core;
 using DbTools.Core.Managers;
 using DbTools.Simple.Factories;
 using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Xunit;
 
 namespace DbTools.Simple.Tests.Managers
@@ -71,8 +73,12 @@ namespace DbTools.Simple.Tests.Managers
                 sysConnectionString = ConnectionStringHelper.GetPostgresSqlSysDbConnectionString(connectionString);
                 cmd = string.Format(SelectDatabaseTemplate, "datname", "pg_database", $"'{TestPostgresSqlDatabase.ToLower()}'");
             }
-            
-            if(dbEngine == DbEngine.SqLite)
+
+            if (dbEngine == DbEngine.SqLite)
+            {
+                Assert.Equal(expected, File.Exists(TestSqLiteDatabase));
+                return;
+            }
 
             if (cmd != null)
             {
@@ -87,7 +93,7 @@ namespace DbTools.Simple.Tests.Managers
             }
             else
             {
-                // todo: throw 
+                throw new InvalidOperationException("Unable to check Db existence");
             }
         }
 
