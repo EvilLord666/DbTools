@@ -58,8 +58,12 @@ namespace DbTools.Simple.Managers
                 string dbName = ConnectionStringHelper.GetDatabaseName(connectionString, _dbEngine);
                 if (_dbEngine == DbEngine.SqLite)
                 {
-                    if (File.Exists(dbName))
-                        File.Delete(dbName);
+                    SQLiteConnection.ClearAllPools();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    string dbFile = Path.GetFullPath(dbName);
+                    if (File.Exists(dbFile))
+                        File.Delete(dbFile);
                     return true;
                 }
                 string dropSqlStatement = GetDropDatabaseStatement(dbName);
@@ -70,7 +74,8 @@ namespace DbTools.Simple.Managers
 
                 bool result = ExecuteStatement(connectionString, dropSqlStatement);
                 if (_dbEngine == DbEngine.PostgresSql)
-                    NpgsqlConnection.ClearAllPools();              // fixes issue with fast connection re-open
+                    NpgsqlConnection.ClearAllPools();              // fixes issue with connection re-open
+
                 return result;
             }
             catch (Exception e)
@@ -178,12 +183,12 @@ namespace DbTools.Simple.Managers
             return result;
         }
 
-        public IDataReader ExecuteDbReader(string connectionString, string cmdText)
+        public Tuple<IDataReader, IDbConnection> ExecuteDbReader(string connectionString, string cmdText)
         {
             IDbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString);
             IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
             connection.Open();
-            return ExecuteDbReader(command as DbCommand);
+            return new Tuple<IDataReader, IDbConnection>(ExecuteDbReader(command as DbCommand), connection);
         }
 
         public async Task<DbDataReader> ExecuteDbReaderAsync(DbCommand command)
@@ -206,12 +211,12 @@ namespace DbTools.Simple.Managers
             return result;
         }
 
-        public async Task<DbDataReader> ExecuteDbReaderAsync(string connectionString, string cmdText)
+        public async Task<Tuple<DbDataReader, DbConnection>> ExecuteDbReaderAsync(string connectionString, string cmdText)
         {
             DbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString);
             await connection.OpenAsync();
             IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
-            return await ExecuteDbReaderAsync(command as DbCommand);
+            return new Tuple<DbDataReader, DbConnection>(await ExecuteDbReaderAsync(command as DbCommand), connection);
         }
 
         private bool ExecuteStatement(string connectionString, string statement)

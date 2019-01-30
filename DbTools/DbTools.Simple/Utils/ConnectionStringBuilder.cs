@@ -49,6 +49,8 @@ namespace DbTools.Simple.Utils
                 builder.DataSource = parameters[DbParametersKeys.DatabaseKey];
             if (parameters.ContainsKey(DbParametersKeys.DatabaseEngineVersion))
                 builder.Version = Convert.ToInt32(parameters[DbParametersKeys.DatabaseEngineVersion]);
+            // builder.Pooling = false;
+            // builder.JournalMode = SQLiteJournalModeEnum.Off;
             return builder.ConnectionString;
         }
 
@@ -71,6 +73,8 @@ namespace DbTools.Simple.Utils
                 builder.UserID = parameters[DbParametersKeys.LoginKey];
             if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
                 builder.Password = parameters[DbParametersKeys.PasswordKey];
+            builder.ConnectionLifeTime = 60;
+            builder.ConnectionTimeout = 60;
             return builder.ConnectionString;
         }
 

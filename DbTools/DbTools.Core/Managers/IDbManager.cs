@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
@@ -13,8 +14,8 @@ namespace DbTools.Core.Managers
         Task<bool> ExecuteNonQueryAsync(DbCommand command);
         Task<bool> ExecuteNonQueryAsync(string connectionString, string cmdText);
         IDataReader ExecuteDbReader(IDbCommand command);
-        IDataReader ExecuteDbReader(string connectionString, string cmdText);
+        Tuple<IDataReader, IDbConnection> ExecuteDbReader(string connectionString, string cmdText);
         Task<DbDataReader> ExecuteDbReaderAsync(DbCommand command);
-        Task<DbDataReader> ExecuteDbReaderAsync(string connectionString, string cmdText);
+        Task<Tuple<DbDataReader, DbConnection>> ExecuteDbReaderAsync(string connectionString, string cmdText);
     }
 }

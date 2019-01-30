@@ -57,12 +57,13 @@ namespace DbTools.Simple.Tests.Managers
             string cmd = File.ReadAllText(Path.GetFullPath(CreateStructureScriptFile));
             ExecuteScriptAndCheck(dbManager, connectionString, cmd, isAsync);
             dbManager.DropDatabase(connectionString);
+            CheckDatabaseExists(dbManager, dbEngine, connectionString, false);
         }
 
         [Theory]
         [InlineData(DbEngine.SqlServer, true, "", "", false)]
         [InlineData(DbEngine.SqlServer, true, "", "", true)]
-        [InlineData(DbEngine.SqLite, true, null, null, false)]
+        [InlineData(DbEngine.SqLite, true, null, null, false)] // temporarily disabled due to some bad resource release
         [InlineData(DbEngine.SqLite, true, null, null, true)]
         [InlineData(DbEngine.MySql, false, "root", "123", false)]
         [InlineData(DbEngine.MySql, false, "root", "123", true)]
@@ -80,12 +81,11 @@ namespace DbTools.Simple.Tests.Managers
             IList<object[]> actualData = new List<object[]>();
             const int numberOfColumns = 3;
             object[] row = new object[numberOfColumns];
-            //int i = 0;
             if (isAsync)
             {
-                Task<DbDataReader> getReaderTask = dbManager.ExecuteDbReaderAsync(connectionString, SelectCitiesQuery);
+                Task<Tuple<DbDataReader, DbConnection>> getReaderTask = dbManager.ExecuteDbReaderAsync(connectionString, SelectCitiesQuery);
                 getReaderTask.Wait();
-                DbDataReader asyncReader = getReaderTask.Result;
+                DbDataReader asyncReader = getReaderTask.Result.Item1;
                 
                 Task<bool> readTask = asyncReader.ReadAsync();
                 readTask.Wait();
@@ -98,23 +98,26 @@ namespace DbTools.Simple.Tests.Managers
                     readTask = asyncReader.ReadAsync();
                     readTask.Wait();
                 }
-                // asyncReader.Close();
+                asyncReader.Close();
                 asyncReader.Dispose();
+                getReaderTask.Result.Item2.Close();
             }
             else
             {
-                IDataReader reader = dbManager.ExecuteDbReader(connectionString, SelectCitiesQuery);
-                while (reader.Read())
+                Tuple<IDataReader, IDbConnection> reader = dbManager.ExecuteDbReader(connectionString, SelectCitiesQuery);
+                while (reader.Item1.Read())
                 {
                     for (int i = 0; i < numberOfColumns; i++)
-                        row[i] = reader.GetValue(i);
+                        row[i] = reader.Item1.GetValue(i);
                     actualData.Add(row);
                 }
-                // reader.Close();
-                reader.Dispose();
+                reader.Item1.Close();
+                reader.Item1.Dispose();
+                reader.Item2.Close();
             }
             Assert.Equal(8, actualData.Count);  // indicator tests
             dbManager.DropDatabase(connectionString);
+            CheckDatabaseExists(dbManager, dbEngine, connectionString, false);
         }
 
         private void ExecuteScriptAndCheck(IDbManager dbManager, string connectionString, string cmd, bool isAsync)
@@ -151,39 +154,42 @@ namespace DbTools.Simple.Tests.Managers
         {
             string cmd = null;
             string sysConnectionString = null;
+            string dbName = _hostAndDatabaseOptions[dbEngine].Item2;
             if (dbEngine == DbEngine.SqlServer)
             {
                 sysConnectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
-                cmd = string.Format(SelectDatabaseTemplate, "name", "master.dbo.sysdatabases", $"N'{TestSqlServerDatabase}'");
+                cmd = string.Format(SelectDatabaseTemplate, "name", "master.dbo.sysdatabases", $"N'{dbName}'");
             }
 
             if (dbEngine == DbEngine.MySql)
             {
                 sysConnectionString = ConnectionStringHelper.GetMySqlSysDbConnectionString(connectionString);
-                cmd = string.Format(SelectDatabaseTemplate, "SCHEMA_NAME", "INFORMATION_SCHEMA.SCHEMATA", $"'{TestMySqlDatabase.ToLower()}'");
+                cmd = string.Format(SelectDatabaseTemplate, "SCHEMA_NAME", "INFORMATION_SCHEMA.SCHEMATA", $"'{dbName.ToLower()}'");
             }
             
             if (dbEngine == DbEngine.PostgresSql)
             {
                 sysConnectionString = ConnectionStringHelper.GetPostgresSqlSysDbConnectionString(connectionString);
-                cmd = string.Format(SelectDatabaseTemplate, "datname", "pg_database", $"'{TestPostgresSqlDatabase.ToLower()}'");
+                cmd = string.Format(SelectDatabaseTemplate, "datname", "pg_database", $"'{dbName.ToLower()}'");
             }
 
             if (dbEngine == DbEngine.SqLite)
             {
-                Assert.Equal(expected, File.Exists(TestSqLiteDatabase));
+                Assert.Equal(expected, File.Exists(dbName));
                 return;
             }
 
             if (cmd != null)
             {
                 string result = string.Empty;
-                IDataReader reader = dbManager.ExecuteDbReader(sysConnectionString, cmd);
-                while (reader.Read())
-                    result = reader.GetString(0);
-                reader.Dispose();
+                Tuple<IDataReader, IDbConnection> reader = dbManager.ExecuteDbReader(sysConnectionString, cmd);
+                while (reader.Item1.Read())
+                    result = reader.Item1.GetString(0);
+                reader.Item1.Close();
+                reader.Item1.Dispose();
+                reader.Item2.Close();
                 if (expected)
-                    Assert.Equal(_hostAndDatabaseOptions[dbEngine].Item2.ToLower(), result.ToLower());
+                    Assert.Equal(dbName.ToLower(), result.ToLower());
                 else Assert.Equal(string.Empty, result);
             }
             else
@@ -196,10 +202,10 @@ namespace DbTools.Simple.Tests.Managers
         private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
         private const string TestPostgresSqlHost = "localhost";
         
-        private const string TestSqlServerDatabase = "SQLServerTestDb";
-        private const string TestSqLiteDatabase = "SqLiteTestDb.sqlite";     
-        private const string TestMySqlDatabase = "MySqlTestDb";    
-        private const string TestPostgresSqlDatabase = "PostgresTestDb";
+        private const string TestSqlServerDatabase = "SQLServerTestDb_{0}";
+        private const string TestSqLiteDatabase = "SqLiteTestDb_{0}.sqlite";     
+        private const string TestMySqlDatabase = "MySqlTestDb_{0}";    
+        private const string TestPostgresSqlDatabase = "PostgresTestDb_{0}";
 
         private const string SelectDatabaseTemplate = "SELECT {0} FROM {1} WHERE {0}={2};";
         private const string SelectCitiesQuery = "SELECT Id, Name, RegionId FROM City";
@@ -210,10 +216,10 @@ namespace DbTools.Simple.Tests.Managers
 
         private readonly IDictionary<DbEngine, Tuple<string, string>> _hostAndDatabaseOptions =  new Dictionary<DbEngine, Tuple<string, string>>()
         {
-            {DbEngine.SqlServer, new Tuple<string, string>(TestSqlServerHost, TestSqlServerDatabase)},
-            {DbEngine.SqLite, new Tuple<string, string>(string.Empty, TestSqLiteDatabase)},
-            {DbEngine.MySql, new Tuple<string, string>(TestMySqlHost, TestMySqlDatabase)},
-            {DbEngine.PostgresSql, new Tuple<string, string>(TestPostgresSqlHost, TestPostgresSqlDatabase)}
+            {DbEngine.SqlServer, new Tuple<string, string>(TestSqlServerHost, string.Format(TestSqlServerDatabase, Guid.NewGuid().ToString().Replace("-","")))},
+            {DbEngine.SqLite, new Tuple<string, string>(string.Empty, string.Format(TestSqLiteDatabase, Guid.NewGuid().ToString().Replace("-","")))},
+            {DbEngine.MySql, new Tuple<string, string>(TestMySqlHost, string.Format(TestMySqlDatabase, Guid.NewGuid().ToString().Replace("-","")))},
+            {DbEngine.PostgresSql, new Tuple<string, string>(TestPostgresSqlHost, string.Format(TestPostgresSqlDatabase, Guid.NewGuid().ToString().Replace("-","")))}
         };
     }
 }
