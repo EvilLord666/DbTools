@@ -5,10 +5,7 @@ using DbTools.Core;
 using DbTools.Core.Managers;
 using DbTools.Simple.Factories;
 using DbTools.Simple.Utils;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbTools.Simple.Tests.Managers
@@ -55,28 +52,42 @@ namespace DbTools.Simple.Tests.Managers
 
         private void CheckDatabaseExists(IDbManager dbManager, DbEngine dbEngine, string connectionString, bool expected)
         {
-            try
+            string cmd = null;
+            string sysConnectionString = null;
+            if (dbEngine == DbEngine.SqlServer)
             {
-                string cmd = null;
-                if (dbEngine == DbEngine.SqlServer)
-                    cmd = string.Format(SelectDatabaseTemplate, "name", "master.dbo.sysdatabases",
-                        TestSqlServerDatabase);
-                if (cmd != null)
-                {
-                    using (IDataReader reader = dbManager.ExecuteDbReader(connectionString, cmd))
-                    {
-                        string value = reader.GetString(0);
-                        Assert.NotNull(value);
-                    }
-                }
-                else
-                {
-                    // throw 
-                }
+                sysConnectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
+                cmd = string.Format(SelectDatabaseTemplate, "name", "master.dbo.sysdatabases", $"N'{TestSqlServerDatabase}'");
             }
-            catch (Exception e)
+
+            if (dbEngine == DbEngine.MySql)
             {
-                
+                sysConnectionString = ConnectionStringHelper.GetMySqlSysDbConnectionString(connectionString);
+                cmd = string.Format(SelectDatabaseTemplate, "SCHEMA_NAME", "INFORMATION_SCHEMA.SCHEMATA", $"'{TestMySqlDatabase.ToLower()}'");
+            }
+            
+            if (dbEngine == DbEngine.PostgresSql)
+            {
+                sysConnectionString = ConnectionStringHelper.GetPostgresSqlSysDbConnectionString(connectionString);
+                cmd = string.Format(SelectDatabaseTemplate, "datname", "pg_database", $"'{TestPostgresSqlDatabase.ToLower()}'");
+            }
+            
+            if(dbEngine == DbEngine.SqLite)
+
+            if (cmd != null)
+            {
+                string result = string.Empty;
+                IDataReader reader = dbManager.ExecuteDbReader(sysConnectionString, cmd);
+                while (reader.Read())
+                    result = reader.GetString(0);
+                reader.Dispose();
+                if (expected)
+                    Assert.Equal(_hostAndDatabaseOptions[dbEngine].Item2.ToLower(), result.ToLower());
+                else Assert.Equal(string.Empty, result);
+            }
+            else
+            {
+                // todo: throw 
             }
         }
 

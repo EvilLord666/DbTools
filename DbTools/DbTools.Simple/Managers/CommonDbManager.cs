@@ -36,9 +36,9 @@ namespace DbTools.Simple.Managers
                 if (_dbEngine == DbEngine.SqlServer)
                     connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
                 if (_dbEngine == DbEngine.MySql)
-                    connectionString = ConnectionStringHelper.GetMySqlDbNameLessConnectionString(connectionString);
+                    connectionString = ConnectionStringHelper.GetMySqlSysDbConnectionString(connectionString);
                 if (_dbEngine == DbEngine.PostgresSql)
-                    connectionString = ConnectionStringHelper.GetPostgresSqlDbNameLessConnectionString(connectionString);
+                    connectionString = ConnectionStringHelper.GetPostgresSqlSysDbConnectionString(connectionString);
 
                 return ExecuteStatement(connectionString, createDbStatement);
             }
@@ -65,7 +65,7 @@ namespace DbTools.Simple.Managers
                 if (_dbEngine == DbEngine.SqlServer)
                     connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
                 if (_dbEngine == DbEngine.PostgresSql)
-                    connectionString = ConnectionStringHelper.GetPostgresSqlDbNameLessConnectionString(connectionString);
+                    connectionString = ConnectionStringHelper.GetPostgresSqlSysDbConnectionString(connectionString);
 
                 return ExecuteStatement(connectionString, dropSqlStatement);
             }
@@ -76,6 +76,15 @@ namespace DbTools.Simple.Managers
             }
         }
 
+        /// <summary>
+        ///      Method for database command execution without any result (UPDATE, DELETE or INSERT command)
+        ///      This method works ONLY if connection was opened, otherwise it fails, see for example
+        ///      ExecuteNonQuery(string connectionString, string cmdText)
+        /// </summary>
+        /// <param name="command"> Sql Command to execute (should be build using DbCommandFactory) </param>
+        /// <returns>
+        ///      True if command was executed without any errors, otherwise - false
+        /// </returns>
         public bool ExecuteNonQuery(IDbCommand command)
         {
             bool result = true;
@@ -96,6 +105,15 @@ namespace DbTools.Simple.Managers
             return result;
         }
 
+        /// <summary>
+        ///      Full sql command execution in one call without manual connection open and close, constructing
+        ///      proper instance of DbCommand
+        /// </summary>
+        /// <param name="connectionString"> Database connection string </param>
+        /// <param name="cmdText"> Script that should be executed </param>
+        /// <returns>
+        ///      True if execution was successful, otherwise - false
+        /// </returns>
         public bool ExecuteNonQuery(string connectionString, string cmdText)
         {
             using (DbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString))
@@ -145,16 +163,12 @@ namespace DbTools.Simple.Managers
             IDataReader result = null;
             try
             {
-                result = command.ExecuteReader();
+                result = command.ExecuteReader(CommandBehavior.SequentialAccess);
             }
             catch (Exception e)
             {
                 _logger.LogError($"An error occurred during Db Reader Execution: {e}");
                 result = null;
-            }
-            finally
-            {
-                command.Dispose();
             }
 
             return result;
@@ -164,6 +178,7 @@ namespace DbTools.Simple.Managers
         {
             IDbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString);
             IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
+            connection.Open();
             return ExecuteDbReader(command as DbCommand);
         }
 

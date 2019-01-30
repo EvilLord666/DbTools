@@ -45,14 +45,14 @@ namespace DbTools.Simple.Utils
             return builder.ConnectionString;
         }
 
-        public static string GetMySqlDbNameLessConnectionString(string connectionString)
+        public static string GetMySqlSysDbConnectionString(string connectionString)
         {
             MySqlConnectionStringBuilder mySqlConnStringBuilder = new MySqlConnectionStringBuilder(connectionString);
             mySqlConnStringBuilder.Database = MySqlDatabase;
             return mySqlConnStringBuilder.ConnectionString;
         }
         
-        public static string GetPostgresSqlDbNameLessConnectionString(string connectionString)
+        public static string GetPostgresSqlSysDbConnectionString(string connectionString)
         {
             NpgsqlConnectionStringBuilder mySqlConnStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
             mySqlConnStringBuilder.Database = PostgresSqlDatabase;
