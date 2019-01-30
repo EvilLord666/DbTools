@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTools.Core", "DbTools.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTools.Simple", "DbTools.Simple\DbTools.Simple.csproj", "{C2C854C3-F4B4-4E9F-8257-A104B2D48481}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTools.Simple.Tests", "DbTools.Simple.Tests\DbTools.Simple.Tests.csproj", "{2CF58748-2265-42AB-B1A2-8B0F2AA9AF8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{C2C854C3-F4B4-4E9F-8257-A104B2D48481}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2C854C3-F4B4-4E9F-8257-A104B2D48481}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2C854C3-F4B4-4E9F-8257-A104B2D48481}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CF58748-2265-42AB-B1A2-8B0F2AA9AF8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF58748-2265-42AB-B1A2-8B0F2AA9AF8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF58748-2265-42AB-B1A2-8B0F2AA9AF8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF58748-2265-42AB-B1A2-8B0F2AA9AF8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
