@@ -208,7 +208,8 @@ namespace DbTools.Simple.Managers
 
         public async Task<DbDataReader> ExecuteDbReaderAsync(string connectionString, string cmdText)
         {
-            IDbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString);
+            DbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString);
+            await connection.OpenAsync();
             IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
             return await ExecuteDbReaderAsync(command as DbCommand);
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -76,6 +77,43 @@ namespace DbTools.Simple.Tests.Managers
             string insertDataCmd = File.ReadAllText(Path.GetFullPath(InsertDataScriptFile));
             ExecuteScriptAndCheck(dbManager, connectionString, createTablesCmd, isAsync);
             ExecuteScriptAndCheck(dbManager, connectionString, insertDataCmd, isAsync);
+            IList<object[]> actualData = new List<object[]>();
+            const int numberOfColumns = 3;
+            object[] row = new object[numberOfColumns];
+            //int i = 0;
+            if (isAsync)
+            {
+                Task<DbDataReader> getReaderTask = dbManager.ExecuteDbReaderAsync(connectionString, SelectCitiesQuery);
+                getReaderTask.Wait();
+                DbDataReader asyncReader = getReaderTask.Result;
+                
+                Task<bool> readTask = asyncReader.ReadAsync();
+                readTask.Wait();
+                
+                while (readTask.Result)
+                {
+                    for (int i = 0; i < numberOfColumns; i++)
+                        row[i] = asyncReader.GetValue(i);
+                    actualData.Add(row);
+                    readTask = asyncReader.ReadAsync();
+                    readTask.Wait();
+                }
+                // asyncReader.Close();
+                asyncReader.Dispose();
+            }
+            else
+            {
+                IDataReader reader = dbManager.ExecuteDbReader(connectionString, SelectCitiesQuery);
+                while (reader.Read())
+                {
+                    for (int i = 0; i < numberOfColumns; i++)
+                        row[i] = reader.GetValue(i);
+                    actualData.Add(row);
+                }
+                // reader.Close();
+                reader.Dispose();
+            }
+            Assert.Equal(8, actualData.Count);  // indicator tests
             dbManager.DropDatabase(connectionString);
         }
 
@@ -164,6 +202,7 @@ namespace DbTools.Simple.Tests.Managers
         private const string TestPostgresSqlDatabase = "PostgresTestDb";
 
         private const string SelectDatabaseTemplate = "SELECT {0} FROM {1} WHERE {0}={2};";
+        private const string SelectCitiesQuery = "SELECT Id, Name, RegionId FROM City";
         private const string CreateStructureScriptFile = @"..\..\..\TestScripts\CreateDb.sql";
         private const string InsertDataScriptFile = @"..\..\..\TestScripts\InsertData.sql";
 
