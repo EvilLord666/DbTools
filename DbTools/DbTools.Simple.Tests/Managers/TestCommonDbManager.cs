@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using DbTools.Core;
 using DbTools.Core.Managers;
 using DbTools.Simple.Factories;
@@ -15,7 +16,7 @@ namespace DbTools.Simple.Tests.Managers
     public class TestCommonDbManager
     {
         [Theory]
-        [InlineData(DbEngine.SqlServer, true, null, null)]
+        [InlineData(DbEngine.SqlServer, true, "", "")]
         [InlineData(DbEngine.SqLite, true, null, null)]
         [InlineData(DbEngine.MySql, false, "root", "123")]
         [InlineData(DbEngine.PostgresSql, false, "postgres", "123")]
@@ -24,7 +25,9 @@ namespace DbTools.Simple.Tests.Managers
             IDbManager dbManager = CreateTestDbManager(dbEngine);
             string connectionString = BuildConnectionString(dbEngine, useIntegratedSecurity, userName, password);
             dbManager.CreateDatabase(connectionString, true);
+            CheckDatabaseExists(dbManager, dbEngine, connectionString, true);
             dbManager.DropDatabase(connectionString);
+            CheckDatabaseExists(dbManager, dbEngine, connectionString, false);
         }
 
         [Fact]
@@ -50,6 +53,33 @@ namespace DbTools.Simple.Tests.Managers
             return ConnectionStringBuilder.Build(dbEngine, options);
         }
 
+        private void CheckDatabaseExists(IDbManager dbManager, DbEngine dbEngine, string connectionString, bool expected)
+        {
+            try
+            {
+                string cmd = null;
+                if (dbEngine == DbEngine.SqlServer)
+                    cmd = string.Format(SelectDatabaseTemplate, "name", "master.dbo.sysdatabases",
+                        TestSqlServerDatabase);
+                if (cmd != null)
+                {
+                    using (IDataReader reader = dbManager.ExecuteDbReader(connectionString, cmd))
+                    {
+                        string value = reader.GetString(0);
+                        Assert.NotNull(value);
+                    }
+                }
+                else
+                {
+                    // throw 
+                }
+            }
+            catch (Exception e)
+            {
+                
+            }
+        }
+
         private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
         private const string TestSqlServerDatabase = "SQLServerTestDb";
         private const string TestSqLiteDatabase = "SqLiteTestDb.sqlite";
@@ -57,6 +87,8 @@ namespace DbTools.Simple.Tests.Managers
         private const string TestMySqlDatabase = "MySqlTestDb";
         private const string TestPostgresSqlHost = "localhost";
         private const string TestPostgresSqlDatabase = "PostgresTestDb";
+
+        private const string SelectDatabaseTemplate = "SELECT {0} FROM {1} WHERE {0}={2};";
 
         private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
 

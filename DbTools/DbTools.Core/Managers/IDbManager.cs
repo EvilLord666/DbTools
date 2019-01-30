@@ -13,6 +13,7 @@ namespace DbTools.Core.Managers
         Task<bool> ExecuteNonQueryAsync(DbCommand command);
         Task<bool> ExecuteNonQueryAsync(string connectionString, string cmdText);
         IDataReader ExecuteDbReader(IDbCommand command);
+        IDataReader ExecuteDbReader(string connectionString, string cmdText);
         Task<DbDataReader> ExecuteDbReaderAsync(DbCommand command);
         Task<DbDataReader> ExecuteDbReaderAsync(string connectionString, string cmdText);
     }

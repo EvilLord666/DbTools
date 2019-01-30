@@ -160,6 +160,13 @@ namespace DbTools.Simple.Managers
             return result;
         }
 
+        public IDataReader ExecuteDbReader(string connectionString, string cmdText)
+        {
+            IDbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString);
+            IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
+            return ExecuteDbReader(command as DbCommand);
+        }
+
         public async Task<DbDataReader> ExecuteDbReaderAsync(DbCommand command)
         {
             DbDataReader result = null;
