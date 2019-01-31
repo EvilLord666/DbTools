@@ -4,7 +4,7 @@ using DbTools.Simple.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace DbTools.Simple.Tests.TestScripts
+namespace DbTools.Simple.Tests.Extensions
 {
     public class TestServiceCollectionExtensions
     {

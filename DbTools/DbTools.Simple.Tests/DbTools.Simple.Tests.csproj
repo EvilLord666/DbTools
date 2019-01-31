@@ -18,8 +18,4 @@
       <ProjectReference Include="..\DbTools.Simple\DbTools.Simple.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Extensions" />
-    </ItemGroup>
-
 </Project>
