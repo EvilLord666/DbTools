@@ -365,4 +365,4 @@ Example of getting service instance via DI (service provider):
 `
   
 # 4 Nuget Package
-Nuget package will be added soon ...
+Nuget package : https://www.nuget.org/packages/DbTools.Simple
