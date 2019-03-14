@@ -1,11 +1,18 @@
 # DbTool
 # 1 Overview
 A small almost cross-database tool (supports SqlServer, MySql, Postgres and SqLite) for working with databases:
+
     - Create
+    
     - Drop
+    
     - Execute scrips as non query
+    
     - Execute data reader for reading data from db
-Primary aim of this tool is to prepare unit test infrastructure for help test enterprise application: create database and structure plus data insert
+    
+    - Execute multiple sql scripts via one method 
+    
+Primary aim of this tool is to prepare unit test infrastructure for help test enterprise application: create database and structure with data insert and any custom settings
 
 # 2 Example of usage
 All classes are public therefore all of them could be used separately, but the main class is IDbManager, example of usage could be found
