@@ -31,9 +31,9 @@ namespace DbTools.Simple.Utils
                 builder.DataSource = parameters[DbParametersKeys.HostKey];
             if (parameters.ContainsKey(DbParametersKeys.DatabaseKey))
                 builder.InitialCatalog = parameters[DbParametersKeys.DatabaseKey];
-            if (parameters.ContainsKey(DbParametersKeys.LoginKey))
+            if (parameters.ContainsKey(DbParametersKeys.LoginKey) && !parameters.ContainsKey(DbParametersKeys.UseIntegratedSecurityKey))
                 builder.UserID = parameters[DbParametersKeys.LoginKey];
-            if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
+            if (parameters.ContainsKey(DbParametersKeys.PasswordKey) && !parameters.ContainsKey(DbParametersKeys.UseIntegratedSecurityKey))
                 builder.Password = parameters[DbParametersKeys.PasswordKey];
             if (parameters.ContainsKey(DbParametersKeys.UseIntegratedSecurityKey))
                 builder.IntegratedSecurity = Convert.ToBoolean(parameters[DbParametersKeys.UseIntegratedSecurityKey]);

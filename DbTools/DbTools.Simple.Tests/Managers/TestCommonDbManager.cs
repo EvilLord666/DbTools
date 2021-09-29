@@ -18,6 +18,7 @@ namespace DbTools.Simple.Tests.Managers
     {
         [Theory]
         [InlineData(DbEngine.SqlServer, true, "", "")]
+        [InlineData(DbEngine.SqlServer, true, null, null)]
         [InlineData(DbEngine.SqLite, true, null, null)]
         [InlineData(DbEngine.MySql, false, "root", "123")]
         [InlineData(DbEngine.PostgresSql, false, "postgres", "123")]
@@ -43,6 +44,8 @@ namespace DbTools.Simple.Tests.Managers
         [Theory]
         [InlineData(DbEngine.SqlServer, true, "", "", false)]
         [InlineData(DbEngine.SqlServer, true, "", "", true)]
+        [InlineData(DbEngine.SqlServer, true, null, null, true)]
+        [InlineData(DbEngine.SqlServer, true, null, null, false)]
         [InlineData(DbEngine.SqLite, true, null, null, false)]
         [InlineData(DbEngine.SqLite, true, null, null, true)]
         [InlineData(DbEngine.MySql, false, "root", "123", false)]
