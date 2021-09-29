@@ -6,6 +6,7 @@ namespace DbTools.Core
         SqLite,
         MySql,
         PostgresSql,
+        H2,
         MongoDb,
         Other
     }
