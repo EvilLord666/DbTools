@@ -75,6 +75,7 @@ namespace DbTools.Simple.Utils
                 builder.Password = parameters[DbParametersKeys.PasswordKey];
             builder.ConnectionLifeTime = 60;
             builder.ConnectionTimeout = 60;
+            builder.SslMode = MySqlSslMode.None;
             return builder.ConnectionString;
         }
 

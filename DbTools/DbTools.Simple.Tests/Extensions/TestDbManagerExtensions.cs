@@ -13,16 +13,20 @@ namespace DbTools.Simple.Tests.Extensions
     public class TestDbManagerExtensions
     {
         [Theory]
-        [InlineData(DbEngine.SqlServer, true, "", "")]
-        [InlineData(DbEngine.MySql, false, "root", "123")]
-        [InlineData(DbEngine.SqLite, false, "", "")]
-        [InlineData(DbEngine.PostgresSql, false, "postgres", "123")]
-        public void TestCreate(DbEngine dbEngine, bool integratedSecurity, string userName, string password)
+        [InlineData(DbEngine.SqlServer, true, "", "", true)]
+        [InlineData(DbEngine.SqlServer, true, "", "", false)]
+        [InlineData(DbEngine.MySql, false, "root", "123",  true)]
+        [InlineData(DbEngine.MySql, false, "root", "123",  false)]
+        [InlineData(DbEngine.SqLite, false, "", "",  true)]
+        [InlineData(DbEngine.SqLite, false, "", "",  false)]
+        [InlineData(DbEngine.PostgresSql, false, "postgres", "123",  true)]
+        [InlineData(DbEngine.PostgresSql, false, "postgres", "123",  false)]
+        public void TestCreate(DbEngine dbEngine, bool integratedSecurity, string userName, string password, bool useScripts)
         {
             IDbManager dbManager = DbManagerFactory.Create(dbEngine, _loggerFactory);
             Tuple<string, string> hostAndName = _hostAndDatabaseOptions[dbEngine];
             string connectionString = dbManager.Create(dbEngine, hostAndName.Item1, hostAndName.Item2,
-                                                       integratedSecurity, userName, password, _scripts);
+                                                       integratedSecurity, userName, password, useScripts ? _scripts: new List<string>());
             Assert.NotNull(connectionString);
             bool result = dbManager.DropDatabase(connectionString);
             Assert.True(result);
