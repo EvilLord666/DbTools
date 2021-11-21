@@ -1,3 +1,4 @@
+SET GLOBAL max_allowed_packet=64000000;
 CREATE TABLE `stock` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `Symbol` varchar(255) CHARACTER SET utf8mb4 NOT NULL,

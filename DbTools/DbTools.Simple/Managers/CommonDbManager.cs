@@ -45,7 +45,7 @@ namespace DbTools.Simple.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occured during database creation, exception {e}");
+                _logger.LogError($"An error occurred during database creation, exception {e}");
                 return false;
             }
 
@@ -80,7 +80,7 @@ namespace DbTools.Simple.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occured during database drop, exception {e}");
+                _logger.LogError($"An error occurred during database drop, exception {e}");
                 return false;
             }
         }
@@ -103,7 +103,7 @@ namespace DbTools.Simple.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occured during execute non query, exception {e}");
+                _logger.LogError($"An error occurred during execute non query, exception {e}");
                 result = false;
             }
             finally
@@ -144,7 +144,7 @@ namespace DbTools.Simple.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occured during execute non query async, exception {e}");
+                _logger.LogError($"An error occurred during execute non query async, exception {e}");
                 result = false;
             }
             finally

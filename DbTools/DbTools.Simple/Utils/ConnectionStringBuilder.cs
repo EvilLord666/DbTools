@@ -73,8 +73,9 @@ namespace DbTools.Simple.Utils
                 builder.UserID = parameters[DbParametersKeys.LoginKey];
             if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
                 builder.Password = parameters[DbParametersKeys.PasswordKey];
-            builder.ConnectionLifeTime = 60;
-            builder.ConnectionTimeout = 60;
+            builder.ConnectionLifeTime = 600;
+            builder.ConnectionTimeout = 600;
+            builder.DefaultCommandTimeout = 500;
             builder.SslMode = MySqlSslMode.None;
             return builder.ConnectionString;
         }
