@@ -123,6 +123,20 @@ namespace DbTools.Simple.Tests.Managers
             CheckDatabaseExists(dbManager, dbEngine, connectionString, false);
         }
 
+        [Theory]
+        [InlineData(DbEngine.MySql, false, "root", "123", true)]
+        [InlineData(DbEngine.MySql, false, "root", "123", false)]
+        private void TestCreateLongData(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password, bool isAsync)
+        {
+            IDbManager dbManager = CreateTestDbManager(dbEngine);
+            string connectionString = BuildConnectionString(dbEngine, useIntegratedSecurity, userName, password);
+            dbManager.CreateDatabase(connectionString, true);
+            string createTablesCmd = File.ReadAllText(Path.GetFullPath(CreateStructureForLongDataTestScriptFile));
+            string insertDataCmd = File.ReadAllText(Path.GetFullPath(InsertDataForLongDataTestScriptFile));
+            ExecuteScriptAndCheck(dbManager, connectionString, createTablesCmd, isAsync);
+            ExecuteScriptAndCheck(dbManager, connectionString, insertDataCmd, isAsync);
+        }
+
         private void ExecuteScriptAndCheck(IDbManager dbManager, string connectionString, string cmd, bool isAsync)
         {
             bool result = false;
@@ -214,6 +228,8 @@ namespace DbTools.Simple.Tests.Managers
         private const string SelectCitiesQuery = "SELECT Id, Name, RegionId FROM City";
         private const string CreateStructureScriptFile = @"..\..\..\TestScripts\CreateDb.sql";
         private const string InsertDataScriptFile = @"..\..\..\TestScripts\InsertData.sql";
+        private const string CreateStructureForLongDataTestScriptFile = @"..\..\..\TestScripts\CreateDbLong.sql";
+        private const string InsertDataForLongDataTestScriptFile = @"..\..\..\TestScripts\InsertDataLong.sql";
 
         private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
 
