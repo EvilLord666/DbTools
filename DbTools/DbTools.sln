@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTools.Simple", "DbTools.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTools.Simple.Tests", "DbTools.Simple.Tests\DbTools.Simple.Tests.csproj", "{2CF58748-2265-42AB-B1A2-8B0F2AA9AF8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTools.Simple.Nuget.Tests", "DbTools.Simple.Nuget.Tests\DbTools.Simple.Nuget.Tests.csproj", "{B1A65045-B17C-4079-B5CB-5ED9A211C7E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{2CF58748-2265-42AB-B1A2-8B0F2AA9AF8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CF58748-2265-42AB-B1A2-8B0F2AA9AF8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CF58748-2265-42AB-B1A2-8B0F2AA9AF8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1A65045-B17C-4079-B5CB-5ED9A211C7E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1A65045-B17C-4079-B5CB-5ED9A211C7E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1A65045-B17C-4079-B5CB-5ED9A211C7E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1A65045-B17C-4079-B5CB-5ED9A211C7E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
