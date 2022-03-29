@@ -20,7 +20,8 @@ namespace DbTools.Simple.Nuget.Tests.Managers
         private void TestCreateLongDataWithNupkgLib(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password, bool isAsync)
         {
             IDbManager dbManager = CreateTestDbManager(dbEngine);
-            string connectionString = BuildConnectionString(dbEngine, useIntegratedSecurity, userName, password);
+            string connectionString = BuildConnectionString(dbEngine, useIntegratedSecurity, userName, password,
+                                                            10000, 1200, 1000);
             dbManager.CreateDatabase(connectionString, true);
             string createTablesCmd = File.ReadAllText(Path.GetFullPath(CreateStructureForLongDataTestScriptFile));
             string insertDataCmd = File.ReadAllText(Path.GetFullPath(InsertDataForLongDataTestScriptFile));
@@ -46,7 +47,8 @@ namespace DbTools.Simple.Nuget.Tests.Managers
             return DbManagerFactory.Create(dbEngine, _loggerFactory);
         }
 
-        private string BuildConnectionString(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password)
+        private string BuildConnectionString(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password,
+                                             int? connectionLifeTime = null, int? connectionTimeout = null, int? commandTimeOut = null)
         {
             Tuple<string, string> hostAndDatabase = _hostAndDatabaseOptions[dbEngine];
             IDictionary<string, string> options = new Dictionary<string, string>();
@@ -55,6 +57,12 @@ namespace DbTools.Simple.Nuget.Tests.Managers
             options.Add(DbParametersKeys.UseIntegratedSecurityKey, useIntegratedSecurity.ToString());
             options.Add(DbParametersKeys.LoginKey, userName);
             options.Add(DbParametersKeys.PasswordKey, password);
+            if (connectionLifeTime.HasValue)
+                options.Add(DbParametersKeys.ConnectionLifeTimeKey, connectionLifeTime.Value.ToString());
+            if (connectionTimeout.HasValue)
+                options.Add(DbParametersKeys.ConnectionTimeOutKey, connectionTimeout.Value.ToString());
+            if (commandTimeOut.HasValue)
+                options.Add(DbParametersKeys.CommandTimeOutKey, commandTimeOut.Value.ToString());
             return ConnectionStringBuilder.Build(dbEngine, options);
         }
 
