@@ -9,5 +9,9 @@ namespace DbTools.Core
         public const string UseIntegratedSecurityKey = "useIntegratedSecurity";
         public const string UseTrustedConnectionKey = "useTrustedConnection";
         public const string DatabaseEngineVersion = "engineVersion";
+        public const string UseSsl = "ssl";
+        public const string ConnectionLifeTime = "connLifeTime";
+        public const string ConnectionTimeOut = "connTimeout";
+        public const string CommandTimeOut = "mdTimeout";
     }
 }
