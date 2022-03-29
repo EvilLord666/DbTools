@@ -20,7 +20,8 @@ namespace DbTools.Simple.Nuget.Tests.Managers
         private void TestCreateLongDataWithNupkgLib(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password, bool isAsync)
         {
             IDbManager dbManager = CreateTestDbManager(dbEngine);
-            string connectionString = BuildConnectionString(dbEngine, useIntegratedSecurity, userName, password);
+            string connectionString = BuildConnectionString(dbEngine, useIntegratedSecurity, userName, password,
+                                                            10000, 1200, 1000);
             dbManager.CreateDatabase(connectionString, true);
             string createTablesCmd = File.ReadAllText(Path.GetFullPath(CreateStructureForLongDataTestScriptFile));
             string insertDataCmd = File.ReadAllText(Path.GetFullPath(InsertDataForLongDataTestScriptFile));
