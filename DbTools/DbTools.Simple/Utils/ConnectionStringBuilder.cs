@@ -39,10 +39,10 @@ namespace DbTools.Simple.Utils
                 builder.IntegratedSecurity = Convert.ToBoolean(parameters[DbParametersKeys.UseIntegratedSecurityKey]);
             if (parameters.ContainsKey(DbParametersKeys.UseTrustedConnectionKey))
                 builder.TrustServerCertificate = Convert.ToBoolean(parameters[DbParametersKeys.UseTrustedConnectionKey]);
-            if (parameters.ContainsKey(DbParametersKeys.ConnectionTimeOut))
+            if (parameters.ContainsKey(DbParametersKeys.ConnectionTimeOutKey))
             {
                 Int32 connectionTimeOut = 0;
-                bool result = Int32.TryParse(parameters[DbParametersKeys.ConnectionTimeOut], out connectionTimeOut);
+                bool result = Int32.TryParse(parameters[DbParametersKeys.ConnectionTimeOutKey], out connectionTimeOut);
                 if (result)
                     builder.ConnectTimeout = connectionTimeOut;
             }
@@ -54,14 +54,14 @@ namespace DbTools.Simple.Utils
             SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
             if (parameters.ContainsKey(DbParametersKeys.DatabaseKey))
                 builder.DataSource = parameters[DbParametersKeys.DatabaseKey];
-            if (parameters.ContainsKey(DbParametersKeys.DatabaseEngineVersion))
-                builder.Version = Convert.ToInt32(parameters[DbParametersKeys.DatabaseEngineVersion]);
+            if (parameters.ContainsKey(DbParametersKeys.DatabaseEngineVersionKey))
+                builder.Version = Convert.ToInt32(parameters[DbParametersKeys.DatabaseEngineVersionKey]);
             // builder.Pooling = false;
             // builder.JournalMode = SQLiteJournalModeEnum.Off;
-            if (parameters.ContainsKey(DbParametersKeys.CommandTimeOut))
+            if (parameters.ContainsKey(DbParametersKeys.CommandTimeOutKey))
             {
                 Int32 commandTimeOut = 0;
-                bool result = Int32.TryParse(parameters[DbParametersKeys.CommandTimeOut], out commandTimeOut);
+                bool result = Int32.TryParse(parameters[DbParametersKeys.CommandTimeOutKey], out commandTimeOut);
                 if (result)
                     builder.DefaultTimeout = commandTimeOut;
             }
@@ -81,26 +81,26 @@ namespace DbTools.Simple.Utils
             if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
                 builder.Password = parameters[DbParametersKeys.PasswordKey];
             
-            if (parameters.ContainsKey(DbParametersKeys.ConnectionLifeTime))
+            if (parameters.ContainsKey(DbParametersKeys.ConnectionLifeTimeKey))
             {
                 UInt32 connectionLifeTime = 0;
-                bool result = UInt32.TryParse(parameters[DbParametersKeys.ConnectionLifeTime], out connectionLifeTime);
+                bool result = UInt32.TryParse(parameters[DbParametersKeys.ConnectionLifeTimeKey], out connectionLifeTime);
                 if (result)
                     builder.ConnectionLifeTime = connectionLifeTime;
             }
             
-            if (parameters.ContainsKey(DbParametersKeys.ConnectionTimeOut))
+            if (parameters.ContainsKey(DbParametersKeys.ConnectionTimeOutKey))
             {
                 UInt32 connectionTimeOut = 0;
-                bool result = UInt32.TryParse(parameters[DbParametersKeys.ConnectionTimeOut], out connectionTimeOut);
+                bool result = UInt32.TryParse(parameters[DbParametersKeys.ConnectionTimeOutKey], out connectionTimeOut);
                 if (result)
                     builder.ConnectionTimeout = connectionTimeOut;
             }
             
-            if (parameters.ContainsKey(DbParametersKeys.CommandTimeOut))
+            if (parameters.ContainsKey(DbParametersKeys.CommandTimeOutKey))
             {
                 UInt32 commandTimeOut = 0;
-                bool result = UInt32.TryParse(parameters[DbParametersKeys.CommandTimeOut], out commandTimeOut);
+                bool result = UInt32.TryParse(parameters[DbParametersKeys.CommandTimeOutKey], out commandTimeOut);
                 if (result)
                     builder.DefaultCommandTimeout = commandTimeOut;
             }
@@ -120,10 +120,10 @@ namespace DbTools.Simple.Utils
                 builder.Username = parameters[DbParametersKeys.LoginKey];
             if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
                 builder.Password = parameters[DbParametersKeys.PasswordKey];
-            if (parameters.ContainsKey(DbParametersKeys.ConnectionLifeTime))
+            if (parameters.ContainsKey(DbParametersKeys.ConnectionLifeTimeKey))
             {
                 Int32 connectionLifeTime = 0;
-                bool result = Int32.TryParse(parameters[DbParametersKeys.ConnectionLifeTime], out connectionLifeTime);
+                bool result = Int32.TryParse(parameters[DbParametersKeys.ConnectionLifeTimeKey], out connectionLifeTime);
                 if (result)
                 {
                     builder.ConnectionLifetime = connectionLifeTime;
@@ -131,10 +131,10 @@ namespace DbTools.Simple.Utils
                 }
             }
             
-            if (parameters.ContainsKey(DbParametersKeys.CommandTimeOut))
+            if (parameters.ContainsKey(DbParametersKeys.CommandTimeOutKey))
             {
                 Int32 commandTimeOut = 0;
-                bool result = Int32.TryParse(parameters[DbParametersKeys.CommandTimeOut], out commandTimeOut);
+                bool result = Int32.TryParse(parameters[DbParametersKeys.CommandTimeOutKey], out commandTimeOut);
                 if (result)
                     builder.CommandTimeout = commandTimeOut;
             }

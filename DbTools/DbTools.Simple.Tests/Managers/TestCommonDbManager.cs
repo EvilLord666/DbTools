@@ -167,11 +167,11 @@ namespace DbTools.Simple.Tests.Managers
             options.Add(DbParametersKeys.LoginKey, userName);
             options.Add(DbParametersKeys.PasswordKey, password);
             if (connectionLifeTime.HasValue)
-                options.Add(DbParametersKeys.ConnectionLifeTime, connectionLifeTime.Value.ToString());
+                options.Add(DbParametersKeys.ConnectionLifeTimeKey, connectionLifeTime.Value.ToString());
             if (connectionTimeout.HasValue)
-                options.Add(DbParametersKeys.ConnectionTimeOut, connectionTimeout.Value.ToString());
+                options.Add(DbParametersKeys.ConnectionTimeOutKey, connectionTimeout.Value.ToString());
             if (commandTimeOut.HasValue)
-                options.Add(DbParametersKeys.CommandTimeOut, commandTimeOut.Value.ToString());
+                options.Add(DbParametersKeys.CommandTimeOutKey, commandTimeOut.Value.ToString());
             return ConnectionStringBuilder.Build(dbEngine, options);
         }
 
