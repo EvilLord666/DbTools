@@ -105,7 +105,13 @@ namespace DbTools.Simple.Utils
                     builder.DefaultCommandTimeout = commandTimeOut;
             }
             
-            builder.SslMode = MySqlSslMode.None; // todo:umv: handle this too ...
+            // todo:umv: handle this too ...
+            builder.SslMode = MySqlSslMode.None; 
+            if (parameters.ContainsKey(DbParametersKeys.SslModeKey))
+            {
+                // builder.SslMode = parameters[DbParametersKeys.SslModeKey];
+            }
+
             return builder.ConnectionString;
         }
 
