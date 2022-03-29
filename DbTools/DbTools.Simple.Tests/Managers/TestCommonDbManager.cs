@@ -171,7 +171,7 @@ namespace DbTools.Simple.Tests.Managers
             if (connectionTimeout.HasValue)
                 options.Add(DbParametersKeys.ConnectionTimeOut, connectionTimeout.Value.ToString());
             if (commandTimeOut.HasValue)
-                options.Add(DbParametersKeys.ConnectionTimeOut, commandTimeOut.Value.ToString());
+                options.Add(DbParametersKeys.CommandTimeOut, commandTimeOut.Value.ToString());
             return ConnectionStringBuilder.Build(dbEngine, options);
         }
 

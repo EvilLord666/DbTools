@@ -12,6 +12,6 @@ namespace DbTools.Core
         public const string UseSsl = "ssl";
         public const string ConnectionLifeTime = "connLifeTime";
         public const string ConnectionTimeOut = "connTimeout";
-        public const string CommandTimeOut = "mdTimeout";
+        public const string CommandTimeOut = "cmdTimeout";
     }
 }
