@@ -26,15 +26,24 @@ namespace DbTools.Simple.Factories
             }
 
             if (dbEngine == DbEngine.MySql)
-                return new MySqlParameter(parameterName, (MySqlDbType)parameterType)
+            {
+                MySqlDbType type = (MySqlDbType)parameterType;
+                return new MySqlParameter(parameterName, type)
                 {
-                    Direction = parameterDirection
+                    Direction = parameterDirection,
+                    Value = MapMySqlParameterValue(type, value)
                 };
+            }
+
             if (dbEngine == DbEngine.PostgresSql)
-                return new NpgsqlParameter(parameterName, (NpgsqlDbType) parameterType)
+            {
+                NpgsqlDbType type = (NpgsqlDbType)parameterType;
+                return new NpgsqlParameter(parameterName, type)
                 {
                     Direction = parameterDirection
                 };
+            }
+
             throw new NotImplementedException("Other db engine are not supported yet, please add a github issue https://github.com/EvilLord666/DbTools");
         }
 
@@ -52,6 +61,20 @@ namespace DbTools.Simple.Factories
             }
         }
 
+        private static object MapMySqlParameterValue(MySqlDbType type, object value)
+        {
+            try
+            {
+                if (!MySqlTypesMapping.ContainsKey(type))
+                    return value;
+                return Convert.ChangeType(value, MySqlTypesMapping[type]);
+            }
+            catch (Exception e)
+            {
+                return value;
+            }
+        }
+
         private static readonly IDictionary<SqlDbType, Type> SqlServerTypesMapping = new Dictionary<SqlDbType, Type>()
         {
             { SqlDbType.BigInt, typeof(long)},
@@ -61,7 +84,27 @@ namespace DbTools.Simple.Factories
             { SqlDbType.DateTime, typeof(DateTime)},
             { SqlDbType.DateTimeOffset, typeof(DateTimeOffset)},
             { SqlDbType.Decimal, typeof(decimal)},
-            { SqlDbType.Float, typeof(DateTime)}
+            { SqlDbType.Float, typeof(float)},
+            { SqlDbType.Image, typeof(byte[])},
+            { SqlDbType.Int, typeof(int)},
+            { SqlDbType.Money, typeof(decimal)},
+            { SqlDbType.NChar, typeof(string)},
+            { SqlDbType.NText, typeof(string)},
+            { SqlDbType.NVarChar, typeof(string)},
+            { SqlDbType.Real, typeof(Single)},
+            { SqlDbType.SmallDateTime, typeof(DateTime)},
+            { SqlDbType.SmallInt, typeof(int)},
+            { SqlDbType.SmallMoney, typeof(decimal)},
+            { SqlDbType.Text, typeof(string)},
+            { SqlDbType.Timestamp, typeof(byte[])},
+            { SqlDbType.UniqueIdentifier, typeof(Guid)},
+            { SqlDbType.VarBinary, typeof(byte[])},
+            { SqlDbType.VarChar, typeof(string)}
+        };
+
+        private static readonly IDictionary<MySqlDbType, Type> MySqlTypesMapping = new Dictionary<MySqlDbType, Type>()
+        {
+            { MySqlDbType.Decimal, typeof(decimal) }
         };
     }
 }
