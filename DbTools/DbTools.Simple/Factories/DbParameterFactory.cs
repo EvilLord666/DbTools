@@ -93,7 +93,7 @@ namespace DbTools.Simple.Factories
             { SqlDbType.NVarChar, typeof(string)},
             { SqlDbType.Real, typeof(Single)},
             { SqlDbType.SmallDateTime, typeof(DateTime)},
-            { SqlDbType.SmallInt, typeof(int)},
+            { SqlDbType.SmallInt, typeof(Int16)},
             { SqlDbType.SmallMoney, typeof(decimal)},
             { SqlDbType.Text, typeof(string)},
             { SqlDbType.Timestamp, typeof(byte[])},
@@ -104,7 +104,20 @@ namespace DbTools.Simple.Factories
 
         private static readonly IDictionary<MySqlDbType, Type> MySqlTypesMapping = new Dictionary<MySqlDbType, Type>()
         {
-            { MySqlDbType.Decimal, typeof(decimal) }
+            { MySqlDbType.Decimal, typeof(decimal) },
+            { MySqlDbType.Byte, typeof(byte) },
+            { MySqlDbType.Int16, typeof(Int16) },
+            { MySqlDbType.Int24, typeof(int) },
+            { MySqlDbType.Int32, typeof(int) },
+            { MySqlDbType.Int64, typeof(long) },
+            { MySqlDbType.Float, typeof(Single) },
+            { MySqlDbType.Double, typeof(double) },
+            { MySqlDbType.Timestamp, typeof(DateTime) },
+            { MySqlDbType.Date, typeof(DateTime) },
+            { MySqlDbType.Time, typeof(string) },
+            { MySqlDbType.DateTime, typeof(DateTime) },
+            { MySqlDbType.Datetime, typeof(DateTime) }
         };
+    };
     }
 }
