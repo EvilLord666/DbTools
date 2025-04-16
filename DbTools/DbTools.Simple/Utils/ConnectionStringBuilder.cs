@@ -107,7 +107,7 @@ namespace DbTools.Simple.Utils
             
             // todo:umv: handle this too ...
             builder.SslMode = MySqlSslMode.None; 
-            if (parameters.ContainsKey(DbParametersKeys.SslModeKey))
+            if (parameters.ContainsKey(DbParametersKeys.MySqlSslModeKey))
             {
                 // builder.SslMode = parameters[DbParametersKeys.SslModeKey];
             }
@@ -143,6 +143,26 @@ namespace DbTools.Simple.Utils
                 bool result = Int32.TryParse(parameters[DbParametersKeys.CommandTimeOutKey], out commandTimeOut);
                 if (result)
                     builder.CommandTimeout = commandTimeOut;
+            }
+
+            if (parameters.ContainsKey(DbParametersKeys.PgSslModeKey))
+            {
+                switch (parameters[DbParametersKeys.PgSslModeKey].ToLower())
+                {
+                    case "require":
+                        builder.SslMode = SslMode.Require;
+                        break;
+                    case "prefer":
+                        builder.SslMode = SslMode.Prefer;
+                        break;
+                    default:
+                        builder.SslMode = SslMode.Disable;
+                        break;
+                }
+            }
+            else
+            {
+                builder.SslMode = SslMode.Disable;
             }
             
             return builder.ConnectionString;
