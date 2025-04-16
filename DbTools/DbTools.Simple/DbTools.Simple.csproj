@@ -9,12 +9,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MySql.Data" Version="8.0.26" />
+      <PackageReference Include="MySql.Data" Version="9.3.0" />
       <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
       <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
 	  <PackageReference Include="Npgsql" Version="8.0.7" />
-	  <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     </ItemGroup>
 
 </Project>
