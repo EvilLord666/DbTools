@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net472;net5.0;net6.0;net8.0;netcoreapp3.1;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <TargetFrameworks>net472;net6.0;net8.0;netcoreapp3.1;netstandard2.0;netstandard2.1</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -10,11 +10,11 @@
 
     <ItemGroup>
       <PackageReference Include="MySql.Data" Version="8.0.26" />
-      <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
-      <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115" />
-	  <PackageReference Include="Npgsql" Version="5.0.10" />
+      <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+      <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+	  <PackageReference Include="Npgsql" Version="8.0.7" />
 	  <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     </ItemGroup>
 
 </Project>
