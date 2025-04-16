@@ -2,24 +2,25 @@
 # 1 Overview
 A small almost cross-database tool (supports SqlServer, MySql, Postgres and SqLite) for working with databases:
 
-    - Create
+    - `Create`
     
-    - Drop
+    - `Drop`
     
-    - Execute scrips as non query
+    - `Execute scrips` as non query
     
-    - Execute data reader for reading data from db
+    - `Execute data reader` for reading data from db
     
-    - Execute multiple sql scripts via one method 
+    - `Execute multiple sql scripts` via one method 
     
 Primary aim of this tool is to prepare unit test infrastructure for help test enterprise application: create database and structure with data insert and any custom settings
+
+For running test it is required to have `developer/123` user in `Postgres` and `Mysql` database servers.
 
 # 2 Example of usage
 All classes are public therefore all of them could be used separately, but the main class is IDbManager, example of usage could be found
 in unit tests (TestCommonDbManager) see (https://github.com/EvilLord666/DbTools/blob/master/DbTools/DbTools.Simple.Tests/Managers/TestCommonDbManager.cs):
 
-`
-
+```csharp
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -245,12 +246,11 @@ in unit tests (TestCommonDbManager) see (https://github.com/EvilLord666/DbTools/
             };
         }
     }
-`
+```
 
 Example with init database with collection of scripts coul be found in TestDbManagerExtensions (https://github.com/EvilLord666/DbTools/blob/master/DbTools/DbTools.Simple.Tests/Extensions/TestDbManagerExtensions.cs):
 
-`
-
+```csharp
     using System;
     using System.Collections.Generic;
     using DbTools.Core;
@@ -334,14 +334,13 @@ Example with init database with collection of scripts coul be found in TestDbMan
 			};
 		}
 	}
-`
+```
 
 # 3 Service for Dependency injection
   
 Example of getting service instance via DI (service provider):
 
-`
-
+```csharp
     using DbTools.Core;
     using DbTools.Core.Managers;
     using DbTools.Simple.Extensions;
@@ -369,7 +368,8 @@ Example of getting service instance via DI (service provider):
 			private readonly ServiceCollection _services = new ServiceCollection();
 		}
 	}
-`
+```
   
 # 4 Nuget Package
-Nuget package : https://www.nuget.org/packages/DbTools.Simple
+
+[Nuget package](https://www.nuget.org/packages/DbTools.Simple)
