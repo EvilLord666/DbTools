@@ -20,8 +20,8 @@ namespace DbTools.Simple.Tests.Managers
         [InlineData(DbEngine.SqlServer, true, "", "")]
         [InlineData(DbEngine.SqlServer, true, null, null)]
         [InlineData(DbEngine.SqLite, true, null, null)]
-        [InlineData(DbEngine.MySql, false, "root", "123")]
-        [InlineData(DbEngine.PostgresSql, false, "postgres", "123")]
+        [InlineData(DbEngine.MySql, false, "developer", "123")]
+        [InlineData(DbEngine.PostgresSql, false, "developer", "123")]
         public void TestCreateAndDropDb(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password)
         {
             IDbManager dbManager = CreateTestDbManager(dbEngine);
@@ -48,10 +48,10 @@ namespace DbTools.Simple.Tests.Managers
         [InlineData(DbEngine.SqlServer, true, null, null, false)]
         [InlineData(DbEngine.SqLite, true, null, null, false)]
         [InlineData(DbEngine.SqLite, true, null, null, true)]
-        [InlineData(DbEngine.MySql, false, "root", "123", false)]
-        [InlineData(DbEngine.MySql, false, "root", "123", true)]
-        [InlineData(DbEngine.PostgresSql, false, "postgres", "123", false)] 
-        [InlineData(DbEngine.PostgresSql, false, "postgres", "123", true)]
+        [InlineData(DbEngine.MySql, false, "developer", "123", false)]
+        [InlineData(DbEngine.MySql, false, "developer", "123", true)]
+        [InlineData(DbEngine.PostgresSql, false, "developer", "123", false)] 
+        [InlineData(DbEngine.PostgresSql, false, "developer", "123", true)]
         public void TestExecuteNonQuery(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password, bool isAsync)
         {
             IDbManager dbManager = CreateTestDbManager(dbEngine);
@@ -68,10 +68,10 @@ namespace DbTools.Simple.Tests.Managers
         [InlineData(DbEngine.SqlServer, true, "", "", true)]
         [InlineData(DbEngine.SqLite, true, null, null, false)] // temporarily disabled due to some bad resource release
         [InlineData(DbEngine.SqLite, true, null, null, true)]
-        [InlineData(DbEngine.MySql, false, "root", "123", false)]
-        [InlineData(DbEngine.MySql, false, "root", "123", true)]
-        [InlineData(DbEngine.PostgresSql, false, "postgres", "123", false)] 
-        [InlineData(DbEngine.PostgresSql, false, "postgres", "123", true)]
+        [InlineData(DbEngine.MySql, false, "developer", "123", false)]
+        [InlineData(DbEngine.MySql, false, "developer", "123", true)]
+        [InlineData(DbEngine.PostgresSql, false, "developer", "123", false)] 
+        [InlineData(DbEngine.PostgresSql, false, "developer", "123", true)]
         public void TestExecuteReader(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password, bool isAsync)
         {
             IDbManager dbManager = CreateTestDbManager(dbEngine);
@@ -124,8 +124,8 @@ namespace DbTools.Simple.Tests.Managers
         }
 
         [Theory]
-        [InlineData(DbEngine.MySql, false, "root", "123", true)]
-        [InlineData(DbEngine.MySql, false, "root", "123", false)]
+        [InlineData(DbEngine.MySql, false, "developer", "123", true)]
+        [InlineData(DbEngine.MySql, false, "developer", "123", false)]
         private void TestCreateLongData(DbEngine dbEngine, bool useIntegratedSecurity, string userName, string password, bool isAsync)
         {
             IDbManager dbManager = CreateTestDbManager(dbEngine);

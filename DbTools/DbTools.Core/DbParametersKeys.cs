@@ -9,7 +9,8 @@ namespace DbTools.Core
         public const string UseIntegratedSecurityKey = "useIntegratedSecurity";
         public const string UseTrustedConnectionKey = "useTrustedConnection";
         public const string DatabaseEngineVersionKey = "engineVersion";
-        public const string SslModeKey = "ssl";
+        public const string MySqlSslModeKey = "ssl";
+        public const string PgSslModeKey = "sslmode";
         public const string ConnectionLifeTimeKey = "connLifeTime";
         public const string ConnectionTimeOutKey = "connTimeout";
         public const string CommandTimeOutKey = "cmdTimeout";

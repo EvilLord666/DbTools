@@ -54,9 +54,9 @@ namespace DbTools.Simple.Utils
         
         public static string GetPostgresSqlSysDbConnectionString(string connectionString)
         {
-            NpgsqlConnectionStringBuilder mySqlConnStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
-            mySqlConnStringBuilder.Database = PostgresSqlDatabase;
-            return mySqlConnStringBuilder.ConnectionString;
+            NpgsqlConnectionStringBuilder pgSqlConnStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+            pgSqlConnStringBuilder.Database = PostgresSqlDatabase;
+            return pgSqlConnStringBuilder.ConnectionString;
         }
 
         private const string SqlServerMasterDatabase = "master";

@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DbTools.Core;
 using DbTools.Core.Managers;
@@ -66,13 +68,17 @@ namespace DbTools.Simple.Managers
                         File.Delete(dbFile);
                     return true;
                 }
-                string dropSqlStatement = GetDropDatabaseStatement(dbName);
+                IList<string> dropSqlStatements = GetDropDatabaseStatement(dbName);
                 if (_dbEngine == DbEngine.SqlServer)
                     connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
                 if (_dbEngine == DbEngine.PostgresSql)
                     connectionString = ConnectionStringHelper.GetPostgresSqlSysDbConnectionString(connectionString);
 
-                bool result = ExecuteStatement(connectionString, dropSqlStatement);
+                bool result = true;
+                foreach (string subCommand in dropSqlStatements)
+                {
+                    result &= ExecuteStatement(connectionString, subCommand);
+                }
                 if (_dbEngine == DbEngine.PostgresSql)
                     NpgsqlConnection.ClearAllPools();              // fixes issue with connection re-open
 
@@ -228,17 +234,23 @@ namespace DbTools.Simple.Managers
             }
         }
 
-        private string GetDropDatabaseStatement(string dbName)
+        private IList<string> GetDropDatabaseStatement(string dbName)
         {
+            IList<string> dropCommands = new List<string>();
             if (_dbEngine == DbEngine.SqlServer)
-                return string.Format(SqlServerDropDatabaseStatementTemplate, dbName);
+                dropCommands.Add(string.Format(SqlServerDropDatabaseStatementTemplate, dbName));
             if (_dbEngine == DbEngine.SqLite)
-                return string.Format(SqLiteDropDatabaseStatementTemplate, dbName);
+                dropCommands.Add(string.Format(SqLiteDropDatabaseStatementTemplate, dbName));
             if (_dbEngine == DbEngine.MySql)
-                return string.Format(MySqlDropDatabaseStatementTemplate, dbName);
+                dropCommands.Add(string.Format(MySqlDropDatabaseStatementTemplate, dbName));
             if (_dbEngine == DbEngine.PostgresSql)
-                return string.Format(PostgresSqlDropDatabaseStatementTemplate, dbName);
-            throw new NotImplementedException("Other db engine were not implemented yet");
+            {
+                string commandsPipeline = String.Format(PostgresSqlDropDatabaseStatementTemplate, dbName);
+                string[] subCommands = commandsPipeline.Split(new char[]{';'});
+                dropCommands = subCommands.Where(s => s.Length > 2).Select(s => s.EndsWith(";") ? s : $"{s};").ToList();
+            }
+
+            return dropCommands;
         }
 
 

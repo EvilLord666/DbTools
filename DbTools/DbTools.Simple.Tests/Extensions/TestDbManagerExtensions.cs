@@ -15,12 +15,12 @@ namespace DbTools.Simple.Tests.Extensions
         [Theory]
         [InlineData(DbEngine.SqlServer, true, "", "", true)]
         [InlineData(DbEngine.SqlServer, true, "", "", false)]
-        [InlineData(DbEngine.MySql, false, "root", "123",  true)]
-        [InlineData(DbEngine.MySql, false, "root", "123",  false)]
+        [InlineData(DbEngine.MySql, false, "developer", "123",  true)]
+        [InlineData(DbEngine.MySql, false, "developer", "123",  false)]
         [InlineData(DbEngine.SqLite, false, "", "",  true)]
         [InlineData(DbEngine.SqLite, false, "", "",  false)]
-        [InlineData(DbEngine.PostgresSql, false, "postgres", "123",  true)]
-        [InlineData(DbEngine.PostgresSql, false, "postgres", "123",  false)]
+        [InlineData(DbEngine.PostgresSql, false, "developer", "123",  true)]
+        [InlineData(DbEngine.PostgresSql, false, "developer", "123",  false)]
         public void TestCreate(DbEngine dbEngine, bool integratedSecurity, string userName, string password, bool useScripts)
         {
             IDbManager dbManager = DbManagerFactory.Create(dbEngine, _loggerFactory);
@@ -34,9 +34,9 @@ namespace DbTools.Simple.Tests.Extensions
 
         [Theory]
         [InlineData(DbEngine.SqlServer, true, "", "")]
-        [InlineData(DbEngine.MySql, false, "root", "123")]
+        [InlineData(DbEngine.MySql, false, "developer", "123")]
         [InlineData(DbEngine.SqLite, false, "", "")]
-        [InlineData(DbEngine.PostgresSql, false, "postgres", "123")]
+        [InlineData(DbEngine.PostgresSql, false, "developer", "123")]
         public void TestInit(DbEngine dbEngine, bool integratedSecurity, string userName, string password)
         {
             IDbManager dbManager = DbManagerFactory.Create(dbEngine, _loggerFactory);
